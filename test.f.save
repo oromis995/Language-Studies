@@ -1,0 +1,34 @@
+
+      C variables
+          INTEGER :: option
+          REAL :: amount
+		  REAL :: result
+		  REAL :: conversion
+		  amount = 0
+		  result = 0
+      C user menu
+          WRITE(*,*) "Enter a Converstion Option (1-6), or (0) to exit "
+          WRITE(*,*) "___________________________"
+          WRITE(*,*) "(1) Pounds to Kilograms"
+          WRITE(*,*) "(2) Kilograms to Pounds"
+          WRITE(*,*) "(3) Feet to Meters"
+          WRITE(*,*) "(4) Fahrenheit to Celsius"
+          WRITE(*,*) "(5) Celsius to Fahrenheit "
+          WRITE(*,*) "(0) Exit this Program "
+      C get user input
+          WRITE(*,*) "Please enter a conversion option"
+          READ(*,*) option
+      C loop -> make do while loop and wrap it around switch
+      C switch statement
+          select case (option)
+			case(1)
+				WRITE(*,*) "Please enter the amount of pounds you would like converted, or (0) to exit."
+				READ(*,*) amount
+				conversion = 0.4535924
+				result = amount * conversion
+				WRITE(*,*) "That would be ", result
+		   
+
+      C lbs to kilo
+	  C   case(2)
+

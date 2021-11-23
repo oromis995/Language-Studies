@@ -1,0 +1,214 @@
+IDENTIFICATION DIVISION.
+PROGRAM-ID. P2.
+ENVIRONMENT DIVISION.
+INPUT-OUTPUT SECTION.
+*> Determines our file location and read mode.
+FILE-CONTROL.
+    SELECT myInFile ASSIGN TO "P2In.dat"
+        ORGANIZATION IS LINE SEQUENTIAL
+        ACCESS IS SEQUENTIAL.
+    SELECT myOutFile ASSIGN TO "P2Out.dat"
+        ORGANIZATION IS LINE SEQUENTIAL
+        ACCESS IS SEQUENTIAL.
+DATA DIVISION.
+FILE SECTION.
+*> Tells the code what the structure of the input file is supposed to be.
+FD myInFile.
+    01 inRecord.
+        02 NAME PIC X(14).
+        02 W-NUMBER PIC X(9).
+        02 SEMESTER PIC X(7)9(4)X.
+        02 COURSE-ID PIC X(5)9(3)X.
+        02 COURSE-TITLE PIC X(24).
+        02 GRADE PIC X.
+        02 CREDITS PIC 9.
+        02 RETURNLN PIC X.
+*> Defines the output file file structure.
+FD myOutFile.
+*> Defines what the class lines look like.
+    01 OUTRECORD-ONE.
+        02 COURSE-ID-PRINT PIC X(5)9(4)X.
+        02 FILLER PIC X(8).
+        02 COURSE-TITLE-PRINT PIC X(24).
+        02 FILLER PIC X(2).
+        02 GRADE-PRINT PIC X.
+        02 FILLER PIC X(8).
+        02 CREDITS-PRINT PIC 9.
+        02 DECIMALS PIC XXX.
+        02 FILLER PIC X(8).
+        02 QLTY-PTS PIC 99.
+        02 DECIMALS-TWO PIC XXX.
+*> Defines the structure of the header lines
+    01 OUTRECORD-TWO PIC X(75).
+*> W
+    01 OUTRECORD-THREE.
+        02 FILLER PIC X(30) VALUE SPACE.
+        02 TOTAL PIC X(10).
+        02 FILLER PIC X(11) VALUE SPACES.
+        02 CREDITS-FOOTER PIC 999.
+        02 DECIMALS-THREE PIC XXX.
+        02 FILLER PIC X(7) VALUE SPACES.
+        02 QUALITY-POINTS PIC 999.
+        02 DECIMALS-FOUR PIC XXX.
+        02 GPA PIC X(4).
+WORKING-STORAGE SECTION.
+*> Our main input file looping variable.
+    01 LOOP-CHK PIC X VALUE "F".
+    01 LOOP-CTR PIC 99 VALUE 0.
+    01 GRADE-PTS PIC 9.
+    01 EARNED-SEME PIC 99.
+    01 EARNED-CUMU PIC 999.
+    01 QP-SEME PIC 99.
+    01 QP-CUMU PIC 999.
+*> Variable which confirms that grades belong to a new semester.
+    01 SEMESTER-CHK PIC X(7)9(4)X.
+*> Variable used to clear a line or write a new line.
+    01 CLEAR-LINE.
+        02 FILLER PIC X(75) VALUE SPACES.
+*> College header variable.
+    01 COLLEGE.
+        02 FILLER PIC X(16) VALUE SPACES.
+        02 FILLER PIC X(43) VALUE "H O K K A I D O   N I N J A   A C A D E M Y".
+        02 FILLER PIC X(16) VALUE SPACES.
+*> College address header variable.
+    01 COLLEGE-ADDRESS.
+        02 FILLER PIC X(26) VALUE SPACES.
+        02 LOCATION PIC X(13)9(3)X9(4) VALUE "HOKKAIDO, JP 064-0941".
+        02 FILLER PIC X(26) VALUE SPACES.
+*> Main headers variable.
+    01 HEADERS.
+        02 SECTION-ONE PIC X(6) VALUE "COURSE".
+        02 FILLER PIC X(12) VALUE SPACES.
+        02 SECTION-TWO PIC X(5) VALUE "TITLE".
+        02 FILLER PIC X(21) VALUE SPACES.
+        02 SECTION-THREE PIC X(2) VALUE "GR".
+        02 FILLER PIC X(7) VALUE SPACES.
+        02 SECTION-FOUR PIC X(6) VALUE "EARNED".
+        02 FILLER PIC X(6) VALUE SPACES. 
+        02 SECTION-FIVE PIC X(4) VALUE "QPTS".
+PROCEDURE DIVISION.
+*> Opens input and output files.
+    OPEN INPUT myInFile.
+    OPEN OUTPUT myOutFile.
+*> Writes and displays main title.
+    MOVE COLLEGE TO OUTRECORD-TWO
+    WRITE OUTRECORD-TWO
+    DISPLAY COLLEGE.
+*> Writes and displays college address.
+    MOVE COLLEGE-ADDRESS TO OUTRECORD-TWO
+    WRITE OUTRECORD-TWO
+    DISPLAY COLLEGE-ADDRESS.
+*> Writes a clear spacer line.
+    MOVE CLEAR-LINE TO OUTRECORD-TWO
+    WRITE OUTRECORD-TWO
+    DISPLAY CLEAR-LINE
+*>  
+    PERFORM subRead
+        PERFORM UNTIL LOOP-CHK = "T"
+        MOVE CLEAR-LINE TO OUTRECORD-TWO
+        IF LOOP-CTR = 1 THEN
+            MOVE NAME TO OUTRECORD-TWO
+            WRITE OUTRECORD-TWO
+            DISPLAY NAME
+            MOVE CLEAR-LINE TO OUTRECORD-TWO
+
+            MOVE W-NUMBER TO OUTRECORD-TWO
+            WRITE OUTRECORD-TWO
+            DISPLAY W-NUMBER
+            MOVE CLEAR-LINE TO OUTRECORD-TWO
+        END-IF
+        IF SEMESTER-CHK IS NOT = SEMESTER THEN
+            IF SEMESTER-CHK IS NOT = "        "  THEN
+     
+                MOVE "SEMESTER" TO TOTAL
+                INSPECT QP-SEME REPLACING LEADING ZERO BY SPACE
+                MOVE QP-SEME TO QUALITY-POINTS
+                INSPECT EARNED-SEME REPLACING LEADING ZERO BY SPACE
+                MOVE ".00" TO DECIMALS-THREE
+                MOVE EARNED-SEME TO CREDITS-FOOTER
+                MOVE ".00" TO DECIMALS-FOUR
+                WRITE OUTRECORD-THREE
+
+                MOVE "CUMULATIVE" TO TOTAL
+                INSPECT QP-CUMU REPLACING LEADING ZERO BY SPACE
+                MOVE QP-CUMU TO QUALITY-POINTS
+                MOVE ".00" TO DECIMALS-THREE
+                INSPECT EARNED-CUMU REPLACING LEADING ZERO BY SPACE
+                MOVE EARNED-CUMU TO CREDITS-FOOTER
+                MOVE ".00" TO DECIMALS-FOUR
+                WRITE OUTRECORD-THREE
+
+                MOVE 0 TO QP-SEME
+                MOVE 0 TO EARNED-SEME
+            END-IF
+
+            MOVE CLEAR-LINE TO OUTRECORD-TWO
+            WRITE OUTRECORD-TWO
+            DISPLAY OUTRECORD-TWO
+
+            MOVE SEMESTER TO SEMESTER-CHK
+            MOVE SEMESTER TO OUTRECORD-TWO
+            WRITE OUTRECORD-TWO
+            DISPLAY SEMESTER
+
+            MOVE HEADERS TO OUTRECORD-TWO
+            WRITE OUTRECORD-TWO
+            DISPLAY HEADERS
+            MOVE CLEAR-LINE TO OUTRECORD-TWO
+       END-IF
+
+            EVALUATE TRUE
+               WHEN GRADE = "A"
+                   MOVE 4 TO GRADE-PTS
+               WHEN GRADE = "B"
+                   MOVE 3 TO GRADE-PTS
+               WHEN GRADE = "C"
+                   MOVE 2 TO GRADE-PTS
+               WHEN OTHER
+                   MOVE 1 TO GRADE-PTS
+            END-EVALUATE
+            MULTIPLY GRADE-PTS BY CREDITS GIVING QLTY-PTS
+            MOVE COURSE-ID TO COURSE-ID-PRINT
+            MOVE COURSE-TITLE TO COURSE-TITLE-PRINT
+            MOVE GRADE TO GRADE-PRINT
+            MOVE CREDITS TO CREDITS-PRINT
+            MOVE ".00" TO DECIMALS
+            MOVE ".00" TO DECIMALS-TWO
+            INSPECT QLTY-PTS REPLACING LEADING ZERO BY SPACE
+            WRITE OUTRECORD-ONE
+            DISPLAY OUTRECORD-ONE          
+        PERFORM subRead
+    END-PERFORM.
+
+    MOVE CLEAR-LINE TO OUTRECORD-TWO
+    MOVE "SEMESTER" TO TOTAL
+    INSPECT QP-CUMU REPLACING LEADING ZERO BY SPACE
+    MOVE QP-CUMU TO QUALITY-POINTS
+    MOVE ".00" TO DECIMALS-THREE
+    INSPECT EARNED-CUMU REPLACING LEADING ZERO BY SPACE
+    MOVE EARNED-CUMU TO CREDITS-FOOTER
+    MOVE ".00" TO DECIMALS-FOUR
+    WRITE OUTRECORD-THREE
+
+    MOVE "CUMULATIVE" TO TOTAL
+    MOVE QP-CUMU TO QUALITY-POINTS
+    MOVE ".00" TO DECIMALS-THREE
+    MOVE EARNED-CUMU TO CREDITS-FOOTER
+    MOVE ".00" TO DECIMALS-FOUR
+    WRITE OUTRECORD-THREE
+
+    CLOSE myInFile.
+    CLOSE myOutFile.
+STOP RUN.
+subRead.
+    READ myInFile
+    AT END
+        MOVE "T" TO LOOP-CHK
+    NOT AT END
+        DISPLAY "."
+        ADD 1 TO LOOP-CTR
+        ADD QLTY-PTS TO QP-SEME
+        ADD CREDITS TO EARNED-SEME
+        ADD QLTY-PTS TO QP-CUMU
+        ADD CREDITS TO EARNED-CUMU
+    END-READ.

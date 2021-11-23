@@ -1,0 +1,60 @@
+*> Backup
+IDENTIFICATION DIVISION. 
+PROGRAM-ID. P2.
+ENVIRONMENT DIVISION.
+INPUT-OUTPUT SECTION.
+FILE-CONTROL.
+    SELECT myInFile ASSIGN TO "P2In.dat".
+    SELECT myOutFile ASSIGN TO "P2Out.dat".
+DATA DIVISION. 
+FILE SECTION.
+FD myInFile.
+01 inRecord.
+    02 NAME-IN PIC X(13).
+FD myOutFile.
+01 outRecord.
+    02 NAME-OUT PIC X(13).
+WORKING-STORAGE SECTION. 
+01 LOOP-CHK PIC X VALUE "F".
+PROCEDURE DIVISION. 
+    OPEN INPUT myInFile.
+    OPEN OUTPUT myOutFile.
+    PERFORM subRead
+    PERFORM UNTIL LOOP-CHK  = "T"
+       MOVE NAME-IN to NAME-OUT
+       *> COMPUTE u = p - 2 
+       DISPLAY NAME-OUT
+       WRITE outRecord
+       PERFORM subRead
+    END-PERFORM.
+    CLOSE myInFile.
+    CLOSE myOutFile.
+    STOP RUN.
+subRead.
+    READ myInFile
+       AT END 
+          MOVE "T" TO LOOP-CHK
+       NOT AT END
+          DISPLAY "NAME-IN = ", NAME-IN
+    END-READ.
+*> display school name, address, name, and w#
+
+DISPLAY "SOUTHEASTERN LOUISIANA UNIVERSITY". 
+DISPLAY" HAMMOND, LA 70402".
+*> DISPLAY THE NAME AND W#
+
+*> add classes for all semesters 
+DISPLAY "FALL 2020".
+
+
+
+DISPLAY "SPRING 2021".
+
+
+
+DISPLAY "SUMMER 2021".
+
+
+
+
+STOP RUN. 

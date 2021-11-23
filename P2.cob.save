@@ -1,0 +1,33 @@
+IDENTIFICATION DIVISION. 
+PROGRAM-ID. P2.
+DATA DIVISION 
+
+WORKING-STORAGE SECTION. 
+*> variables
+ *> have a variable for the name (from the input file?)
+ *> have a variable for the w# 
+
+
+
+PROCEDURE DIVISION. 
+*> display school name, address, name, and w#
+
+DISPLAY "SOUTHEASTERN LOUISIANA UNIVERSITY". 
+DISPLAY" HAMMOND, LA 70402".
+*> DISPLAY THE NAME AND W#
+
+*> add classes for all semesters 
+DISPLAY "FALL 2020".
+
+
+
+DISPLAY "SPRING 2021".
+
+
+
+DISPLAY "SUMMER 2021".
+
+
+
+
+STOP RUN.

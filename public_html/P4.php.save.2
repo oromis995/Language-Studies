@@ -1,0 +1,86 @@
+<html>
+ <head>
+ <title>PHP Test MySQL</title>
+ </head>
+ <body>
+
+<?php
+
+$con=mysqli_connect(“localhost”,”cmps401”,”Mycmps401db”,”cmps401”);
+
+$correct = 0;
+$add = 1;
+$count = 0;
+$firstName = $_POST['firstname'];
+$lastName = $_POST['lastname'];
+$time = date("m/d/Y");
+
+if($_POST['1']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['2']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['3']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['4']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['5']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['6']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['7']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['8']){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['9'])=={
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+if($_POST['10'] == "P4.php"){
+        $correct = $correct + $add;
+        $count = $count + $add;
+}
+
+$grade = ($correct/10)*100;
+
+echo("$firstName $lastName your grade is $correct");
+
+if(mysqli_num_rows(mysqli_query($con, "SELECT 'First Name' FROM 'g201' WHERE 'Firstname' = '$firstName'")) < 1){
+$sql = "INSERT INTO 'g201' ('First Name', 'Last Name', 'Score', 'Time') VALUES ('$firstName', '$lastName, '$grade', '$time')";
+
+ if($con -> query($sql) === TRUE){
+  echo "Value Saved";
+ }else
+   {
+        echo "Error in saving the value please try again.";
+   }
+
+}else{
+ $sql = "UPDATE 'g201' SET 'Score' = '$grade', 'Time' = '$time' WHERE 'FirstName' = '$firstName' ";
+
+  if($con->query($sql)=== TRUE){
+  echo "Value Updated";
+  }else{
+        echo "Error in updating the value please try again.";
+ }
+}
+
+?>
+
+</body>
+</html>
